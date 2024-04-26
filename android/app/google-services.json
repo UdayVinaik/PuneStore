@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1014803825196",
+    "project_id": "punesatsangstore-71de6",
+    "storage_bucket": "punesatsangstore-71de6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014803825196:android:aed0750e79676f28f2c789",
+        "android_client_info": {
+          "package_name": "com.punestore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvvYdUbjFm4GwuQNgugALIONXxcyMxC28"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
