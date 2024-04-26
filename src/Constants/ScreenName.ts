@@ -9,5 +9,6 @@ export const ScreenNames = {
     UserDetails: 'UserDetails',
     Orders: 'Orders',
     OrderDetails: 'OrderDetails',
-    StoreOrderDetails: 'StoreOrderDetails'
+    StoreOrderDetails: 'StoreOrderDetails',
+    EditProductScreen: 'EditProductScreen'
 }

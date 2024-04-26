@@ -7,7 +7,12 @@ import {
   View,
 } from 'react-native';
 import {Colors} from '../Theme/Colors';
-import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {
+  ParamListBase,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {ScreenNames} from '../Constants/ScreenName';
 import Header from '../Components/Header/Header';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -20,10 +25,12 @@ import {
 import {GET_LIST_OF_PRODUCTS, GET_ORDER_LIST} from '../Constants/ActionTypes';
 import Loader from '../Components/Loader/Loader';
 import {AsyncStorageConstants} from '../Constants/AsyncStorageConstants';
+import {RootStackParamListType} from '../Constants/Types';
 
 const StoreDashboard = () => {
-  const {navigate} =
+  const {navigate, setParams} =
     useNavigation<NativeStackNavigationProp<ParamListBase, string>>();
+  const route = useRoute<RouteProp<RootStackParamListType, 'StoreDashboard'>>();
 
   const products = useSelector((state: any) => state.product.listProduct);
   const orders = useSelector(selectOrders);
@@ -33,13 +40,14 @@ const StoreDashboard = () => {
   console.log('orders ====', orders);
 
   useEffect(() => {
-    if (!isNonEmpty(products)) {
+    if (!isNonEmpty(products) || route.params?.isFromEditProduct) {
+      setParams({isFromEditProduct: false});
       dispatch({type: GET_LIST_OF_PRODUCTS});
     }
     if (!isNonEmpty(orders)) {
       dispatch({type: GET_ORDER_LIST});
     }
-  }, [products, dispatch]);
+  }, [products, dispatch, route.params?.isFromEditProduct]);
 
   const addProduct = useCallback(() => {
     navigate(ScreenNames.AddProduct);
@@ -50,7 +58,7 @@ const StoreDashboard = () => {
   }, []);
 
   const navigateToListProducts = useCallback(() => {
-    navigate(ScreenNames.ProductList);
+    navigate(ScreenNames.ProductList, {isFromStoreDashboard: true});
   }, [navigate]);
 
   const onPressLogout = useCallback(async () => {
@@ -69,7 +77,7 @@ const StoreDashboard = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="Dashboard" leftIcon="true" />
+      <Header title="Dashboard" />
       <ScrollView style={styles.listContainer}>
         <TouchableOpacity style={styles.button} onPress={addProduct}>
           <Text style={styles.buttonText}>{'Add Product'}</Text>

@@ -57,7 +57,10 @@ const LoginScreen = () => {
   const handleUserLogin = async () => {
     if (validateName(username) && validateUid(password)) {
       setError(false);
-      await storeDataInAsyncStorage(AsyncStorageConstants.UID, password);
+      await storeDataInAsyncStorage(
+        AsyncStorageConstants.UID,
+        password.toUpperCase(),
+      );
       await storeDataInAsyncStorage(AsyncStorageConstants.Name, username);
       await storeDataInAsyncStorage(AsyncStorageConstants.LoggedInType, 'user');
       navigate(ScreenNames.HomeScreen);
@@ -67,7 +70,10 @@ const LoginScreen = () => {
   };
 
   const handleOwnerLogin = async () => {
-    if (username.toLowerCase() === 'punestore' && password === 'radhasoami') {
+    if (
+      username.toLowerCase() === 'punestore' &&
+      password.toLowerCase() === 'radhasoami'
+    ) {
       await storeDataInAsyncStorage(
         AsyncStorageConstants.LoggedInType,
         'owner',

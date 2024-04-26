@@ -61,7 +61,7 @@ function HomeScreen() {
       dispatch({type: GET_LIST_OF_PRODUCTS});
     }
     if (!isNonEmpty(orders)) {
-      dispatch({type: GET_ORDER_BY_ID, payload: {id: uid.toLowerCase()}});
+      dispatch({type: GET_ORDER_BY_ID, payload: {id: uid.toUpperCase()}});
     }
   }, [products, dispatch, route.params?.isFromUserDetails]);
 

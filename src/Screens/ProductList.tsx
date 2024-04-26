@@ -9,9 +9,19 @@ import {
 import {Colors} from '../Theme/Colors';
 import Header from '../Components/Header/Header';
 import {useSelector} from 'react-redux';
-import {ImageURLs, Product, SectionListItemType} from '../Constants/Types';
+import {
+  ImageURLs,
+  Product,
+  RootStackParamListType,
+  SectionListItemType,
+} from '../Constants/Types';
 import {selectImageURLs} from '../Storage/Slices/ImageSlice';
-import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {
+  ParamListBase,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ScreenNames} from '../Constants/ScreenName';
 
@@ -23,6 +33,7 @@ const ProductList = () => {
   );
   const {navigate} =
     useNavigation<NativeStackNavigationProp<ParamListBase, string>>();
+  const route = useRoute<RouteProp<RootStackParamListType, 'ProductList'>>();
 
   const modifyData = useCallback(() => {
     let productsByCategory: SectionListItemType[] = [];
@@ -59,9 +70,12 @@ const ProductList = () => {
 
   const navigateoProductsByCategory = useCallback(
     (item: SectionListItemType) => {
-      navigate(ScreenNames.ProductsByCategory, {item});
+      navigate(ScreenNames.ProductsByCategory, {
+        item,
+        isFromStoreDashboard: route?.params?.isFromStoreDashboard,
+      });
     },
-    [],
+    [navigate, route.params?.isFromStoreDashboard],
   );
 
   return (

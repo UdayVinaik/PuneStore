@@ -20,17 +20,31 @@ const ProductsByCategory = (props: ProductsByCategoryProps) => {
     useNavigation<NativeStackNavigationProp<ParamListBase, string>>();
 
   const renderItem = ({item}: any) => {
-    return <ProductItem item={item} />;
+    return (
+      <ProductItem
+        item={item}
+        isFromStoreDashboard={props?.route?.params?.isFromStoreDashboard}
+      />
+    );
   };
 
   const navigateToCart = useCallback(() => {
     navigate(ScreenNames.Cart);
   }, [navigate]);
 
+  const navigateToProductCategory = useCallback(() => {
+    navigate(ScreenNames.ProductList);
+  }, [navigate]);
+
   return (
     <View style={styles.container}>
       <Header title={'Products by category'} leftIcon={'true'} />
       <FlatList data={products} renderItem={renderItem} numColumns={2} />
+      <TouchableOpacity
+        style={styles.button}
+        onPress={navigateToProductCategory}>
+        <Text style={styles.buttonText}>{'Continue Shopping'}</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={navigateToCart}>
         <Text style={styles.buttonText}>{'Go to Cart'}</Text>
       </TouchableOpacity>

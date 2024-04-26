@@ -5,10 +5,14 @@ import {Colors} from '../../Theme/Colors';
 import CartController from '../CartController/CartController';
 import {useDispatch, useSelector} from 'react-redux';
 import {selectCart, setCartItemsAction} from '../../Storage/Slices/CartSlice';
+import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {ScreenNames} from '../../Constants/ScreenName';
 
 interface ProductItemProps {
   item: CartProduct;
   isFromCart?: boolean;
+  isFromStoreDashboard?: boolean;
 }
 
 const ProductItem = (props: ProductItemProps) => {
@@ -16,8 +20,12 @@ const ProductItem = (props: ProductItemProps) => {
   const dispatch = useDispatch();
   const cartProducts = useSelector(selectCart);
   const imagePlaceholder = require('../../Assets/Images/ImagePlaceholder.png');
+  const {navigate} =
+    useNavigation<NativeStackNavigationProp<ParamListBase, string>>();
 
   console.log('cartProducts ====', cartProducts);
+
+  console.log('isFromStoreDashboard ====', props.isFromStoreDashboard);
 
   const onDecrement = useCallback(() => {
     const resultIndex: number = cartProducts?.findIndex(
@@ -78,6 +86,11 @@ const ProductItem = (props: ProductItemProps) => {
     }
   }, [cartProducts, item]);
 
+  const onPressItem = useCallback((item: CartProduct) => {
+    console.log('in onPress');
+    navigate(ScreenNames.EditProductScreen, {item});
+  }, []);
+
   console.log(
     'item.price * item.quantity ====',
     item.price,
@@ -87,7 +100,10 @@ const ProductItem = (props: ProductItemProps) => {
   );
 
   return (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => onPressItem(item)}
+      disabled={!props?.isFromStoreDashboard}>
       <View style={styles.imageContainer}>
         <Image source={{uri: item.imageURL}} style={styles.image} />
       </View>
@@ -113,7 +129,7 @@ const ProductItem = (props: ProductItemProps) => {
           quantity={showQuantity}
         />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

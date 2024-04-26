@@ -13,6 +13,7 @@ import UserDetails from '../../Screens/UserDetails';
 import Orders from '../../Screens/Orders';
 import OrderDetails from '../../Screens/OrderDetails';
 import StoreOrderDetails from '../../Screens/StoreOrderDetails';
+import EditProductScreen from '../../Screens/EditProductScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,10 @@ const Routes = () => {
         <Stack.Screen
           name={ScreenNames.StoreOrderDetails}
           component={StoreOrderDetails}
+        />
+        <Stack.Screen
+          name={ScreenNames.EditProductScreen}
+          component={EditProductScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

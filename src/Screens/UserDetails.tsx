@@ -19,7 +19,7 @@ import {
 import {AsyncStorageConstants} from '../Constants/AsyncStorageConstants';
 import {useDispatch, useSelector} from 'react-redux';
 import {selectCart, setCartItemsAction} from '../Storage/Slices/CartSlice';
-import {Order} from '../Constants/Types';
+import {Order, Product} from '../Constants/Types';
 import {OrderStatuses} from '../Constants/Constants';
 import FBManager from '../Helpers/Firebase/FirebaseManager';
 import {Schemas} from '../Constants/SchemaName';
@@ -35,6 +35,7 @@ const UserDetails = () => {
   const [storedName, setStoredName] = useState('');
   const [storedUid, setStoredUid] = useState('');
   const cartProducts = useSelector(selectCart);
+  const products = useSelector((state: any) => state.product.listProduct);
   const orders = useSelector(selectOrders);
   const {navigate} =
     useNavigation<NativeStackNavigationProp<ParamListBase, string>>();
@@ -56,16 +57,29 @@ const UserDetails = () => {
     setLoading(true);
     if (isNonEmpty(username) && isNonEmpty(uid) && !isNonEmpty(orders)) {
       const order: Order = {
-        id: uid.toLowerCase(),
+        id: uid.toUpperCase(),
         userDetails: {
           name: username,
-          uid: uid.toLowerCase(),
+          uid: uid.toUpperCase(),
         },
         products: cartProducts,
         status: OrderStatuses.OrderPlaced,
       };
 
       await FBManager.Add(Schemas.Order, uid, order);
+      await Promise.all(
+        order.products?.map(async (product: Product) => {
+          const actualProduct = products?.find(
+            (prod: Product) => prod.id === product.id,
+          );
+          await FBManager.Update(Schemas.Product, product.id, {
+            quantity:
+              actualProduct?.quantity - product.quantity > 0
+                ? actualProduct?.quantity - product.quantity
+                : 0,
+          });
+        }),
+      );
       dispatch(setCartItemsAction([]));
       navigate(ScreenNames.HomeScreen, {isFromUserDetails: true});
     } else if (isNonEmpty(orders)) {
@@ -82,7 +96,7 @@ const UserDetails = () => {
       await storeDataInAsyncStorage(AsyncStorageConstants.UID, uid);
     }
     setLoading(false);
-  }, [username, uid, navigate, storedName, storedUid]);
+  }, [username, uid, navigate, storedName, storedUid, products]);
 
   return (
     <View style={styles.container}>

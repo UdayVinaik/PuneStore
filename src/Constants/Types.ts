@@ -75,5 +75,14 @@ export type RootStackParamListType = {
     },
     LoginScreen: {
         isFromLogout?: boolean;
+    },
+    ProductList: {
+        isFromStoreDashboard?: boolean;
+    },
+    EditProductScreen: {
+        item: Product;
+    },
+    StoreDashboard: {
+        isFromEditProduct?: boolean;
     }
 }
