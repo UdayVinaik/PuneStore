@@ -4,7 +4,7 @@ import FBManager from "../../Helpers/Firebase/FirebaseManager";
 import { Schemas } from "../../Constants/SchemaName";
 import { Order } from "../../Constants/Types";
 import { setOrderListAction, setOrderListErrorAction } from "../Slices/OrderSlice";
-import { OrderStatuses } from "../../Constants/Constants";
+import { OrderStatuses, OrderStatusesArray } from "../../Constants/Constants";
 
 export const fetchOrders = async () => {
     try {
@@ -27,6 +27,9 @@ export const fetchOrderByUid = async (id: string) => {
 export const updateOrderByUid = async (order: Order, orderStatus: OrderStatuses) => {
     try {
         console.log('aaaa ====')
+        if(orderStatus === OrderStatusesArray[3]?.key) {
+            await FBManager.Delete(Schemas.Order, order.id);
+        }
         const result = await FBManager.Update(Schemas.Order, order.id, {status: orderStatus});
         return result;
     } catch(error) {

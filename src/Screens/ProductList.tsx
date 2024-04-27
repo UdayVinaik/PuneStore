@@ -24,6 +24,7 @@ import {
 } from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ScreenNames} from '../Constants/ScreenName';
+import {Categories} from '../Constants/Category';
 
 const ProductList = () => {
   const products = useSelector((state: any) => state.product.listProduct);
@@ -78,6 +79,11 @@ const ProductList = () => {
     [navigate, route.params?.isFromStoreDashboard],
   );
 
+  const showItemTitle = useCallback((title: string) => {
+    const category = Categories?.find(item => item?.key === title);
+    return category?.label;
+  }, []);
+
   return (
     <View style={styles.container}>
       <Header title={'Products'} leftIcon={'true'} />
@@ -88,7 +94,7 @@ const ProductList = () => {
               style={styles.button}
               key={index.toString()}
               onPress={() => navigateoProductsByCategory(item)}>
-              <Text style={styles.buttonText}>{item.title}</Text>
+              <Text style={styles.buttonText}>{showItemTitle(item.title)}</Text>
             </TouchableOpacity>
           );
         })}

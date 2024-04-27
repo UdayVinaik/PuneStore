@@ -1,5 +1,8 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {
+  Alert,
+  AppState,
+  BackHandler,
   ScrollView,
   StyleSheet,
   Text,
@@ -26,6 +29,7 @@ import {GET_LIST_OF_PRODUCTS, GET_ORDER_LIST} from '../Constants/ActionTypes';
 import Loader from '../Components/Loader/Loader';
 import {AsyncStorageConstants} from '../Constants/AsyncStorageConstants';
 import {RootStackParamListType} from '../Constants/Types';
+import NetInfo from '@react-native-community/netinfo';
 
 const StoreDashboard = () => {
   const {navigate, setParams} =
@@ -35,6 +39,49 @@ const StoreDashboard = () => {
   const products = useSelector((state: any) => state.product.listProduct);
   const orders = useSelector(selectOrders);
   const dispatch = useDispatch();
+  const appState = useRef(AppState.currentState);
+  let isConnected = useRef<boolean | null>(true);
+
+  const onSuccess = () => {
+    BackHandler.exitApp();
+  };
+
+  useEffect(() => {
+    const unsubscribeNetInfo = NetInfo.addEventListener(currentState => {
+      isConnected.current = currentState.isConnected;
+      if (!currentState.isConnected) {
+        Alert.alert(
+          'Error',
+          'Please connect to internet. You do not have a internet connection at this moment.',
+          [{text: 'OK', onPress: () => onSuccess()}],
+        );
+      }
+    });
+    return () => unsubscribeNetInfo();
+  }, []);
+
+  // For network connection
+  useEffect(() => {
+    const unsubscribe = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        if (!isConnected.current) {
+          Alert.alert(
+            'Error',
+            'Please connect to internet. You do not have a internet connection at this moment.',
+            [{text: 'OK', onPress: () => onSuccess()}],
+          );
+        }
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      unsubscribe.remove();
+    };
+  }, []);
 
   console.log('products  ====', products);
   console.log('orders ====', orders);

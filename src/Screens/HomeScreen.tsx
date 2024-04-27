@@ -1,11 +1,13 @@
-// HomeScreen.js
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
   Text,
+  BackHandler,
+  Alert,
+  AppState,
 } from 'react-native';
 import {Colors} from '../Theme/Colors';
 import Header from '../Components/Header/Header';
@@ -32,15 +34,59 @@ import {
   storeDataInAsyncStorage,
 } from '../Helpers/Utility/UtilityManager';
 import {AsyncStorageConstants} from '../Constants/AsyncStorageConstants';
+import NetInfo from '@react-native-community/netinfo';
 
 function HomeScreen() {
   const dispatch = useDispatch();
-  const {navigate} =
+  const {navigate, setParams} =
     useNavigation<NativeStackNavigationProp<ParamListBase, string>>();
   const route = useRoute<RouteProp<RootStackParamListType, 'HomeScreen'>>();
   const products = useSelector((state: any) => state.product.listProduct);
   const orders = useSelector(selectOrders);
   const [uid, setUid] = useState('');
+  const appState = useRef(AppState.currentState);
+  let isConnected = useRef<boolean | null>(true);
+
+  const onSuccess = () => {
+    BackHandler.exitApp();
+  };
+
+  useEffect(() => {
+    const unsubscribeNetInfo = NetInfo.addEventListener(currentState => {
+      isConnected.current = currentState.isConnected;
+      if (!currentState.isConnected) {
+        Alert.alert(
+          'Error',
+          'Please connect to internet. You do not have a internet connection at this moment.',
+          [{text: 'OK', onPress: () => onSuccess()}],
+        );
+      }
+    });
+    return () => unsubscribeNetInfo();
+  }, []);
+
+  // For network connection
+  useEffect(() => {
+    const unsubscribe = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        if (!isConnected.current) {
+          Alert.alert(
+            'Error',
+            'Please connect to internet. You do not have a internet connection at this moment.',
+            [{text: 'OK', onPress: () => onSuccess()}],
+          );
+        }
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      unsubscribe.remove();
+    };
+  }, []);
 
   console.log('products  ====', products);
   console.log('orders ====', orders);
@@ -62,6 +108,10 @@ function HomeScreen() {
     }
     if (!isNonEmpty(orders)) {
       dispatch({type: GET_ORDER_BY_ID, payload: {id: uid.toUpperCase()}});
+    }
+    if (route.params?.isFromUserDetails) {
+      dispatch({type: GET_LIST_OF_PRODUCTS});
+      setParams({isFromUserDetails: false});
     }
   }, [products, dispatch, route.params?.isFromUserDetails]);
 
