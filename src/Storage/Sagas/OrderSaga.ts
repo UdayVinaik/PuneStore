@@ -26,7 +26,6 @@ export const fetchOrderByUid = async (id: string) => {
 
 export const updateOrderByUid = async (order: Order, orderStatus: OrderStatuses) => {
     try {
-        console.log('aaaa ====')
         if(orderStatus === OrderStatusesArray[3]?.key) {
             await FBManager.Delete(Schemas.Order, order.id);
         }
@@ -56,7 +55,6 @@ export function* workerOrderSaga({payload}: any) {
 export function* updateOrderStatusSaga ({payload}: any) {
     try {
         const result: any = yield call(updateOrderByUid, payload?.order, payload?.orderStatus);
-        console.log('result ====', result);
     } catch(error) {
         console.log('Error ====', error);
     }

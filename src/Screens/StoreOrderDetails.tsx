@@ -49,9 +49,6 @@ const StoreOrderDetails = (props: StoreOrderDetailsProps) => {
   const {navigate} =
     useNavigation<NativeStackNavigationProp<ParamListBase, string>>();
 
-  console.log('order ====', order);
-  console.log('orderStatus ====', orderStatus);
-
   useEffect(() => {
     setOrderStatus(order?.status);
   }, []);

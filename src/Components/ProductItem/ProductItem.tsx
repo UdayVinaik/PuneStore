@@ -25,8 +25,6 @@ const ProductItem = (props: ProductItemProps) => {
 
   console.log('cartProducts ====', cartProducts);
 
-  console.log('isFromStoreDashboard ====', props.isFromStoreDashboard);
-
   const onDecrement = useCallback(() => {
     const resultIndex: number = cartProducts?.findIndex(
       (product: Product) => product?.id === item?.id,
@@ -34,8 +32,6 @@ const ProductItem = (props: ProductItemProps) => {
     if (resultIndex !== -1) {
       if (cartProducts[resultIndex]?.quantity > 1) {
         const price = cartProducts[resultIndex]?.totalPrice - item.price;
-        console.log('price ====', price);
-        console.log('cartProducts[resultIndex]?.price ====');
         const quantity = cartProducts[resultIndex]?.quantity - 1;
         const modifiedCartProducts = [...cartProducts];
         modifiedCartProducts[resultIndex] = {
@@ -86,17 +82,11 @@ const ProductItem = (props: ProductItemProps) => {
     }
   }, [cartProducts, item]);
 
-  const onPressItem = useCallback((item: CartProduct) => {
-    console.log('in onPress');
-    navigate(ScreenNames.EditProductScreen, {item});
-  }, []);
-
-  console.log(
-    'item.price * item.quantity ====',
-    item.price,
-    item.quantity,
-    item.price * item.quantity,
-    item.totalPrice,
+  const onPressItem = useCallback(
+    (item: CartProduct) => {
+      navigate(ScreenNames.EditProductScreen, {item});
+    },
+    [navigate],
   );
 
   return (
@@ -105,7 +95,10 @@ const ProductItem = (props: ProductItemProps) => {
       onPress={() => onPressItem(item)}
       disabled={!props?.isFromStoreDashboard}>
       <View style={styles.imageContainer}>
-        <Image source={{uri: item.imageURL}} style={styles.image} />
+        <Image
+          source={item.imageURL ? {uri: item.imageURL} : imagePlaceholder}
+          style={styles.image}
+        />
       </View>
       <View style={styles.nameContainer}>
         <Text style={styles.name} numberOfLines={2}>
@@ -118,16 +111,24 @@ const ProductItem = (props: ProductItemProps) => {
           {' Rs.'}
         </Text>
       </View>
-      <View style={styles.priceContainer}>
-        <Text style={styles.quantity}>{'Quantities Left: '}</Text>
-        <Text style={styles.quantityRed}>{item.quantity ?? 0}</Text>
-      </View>
+      {props?.isFromStoreDashboard && (
+        <View style={styles.priceContainer}>
+          <Text style={styles.quantity}>{'Quantities Left: '}</Text>
+          <Text style={styles.quantityRed}>{item.quantity ?? 0}</Text>
+        </View>
+      )}
       <View style={styles.cartControllerContainer}>
-        <CartController
-          onDecrement={onDecrement}
-          onIncrement={onIncrement}
-          quantity={showQuantity}
-        />
+        {item.quantity > 0 ? (
+          <CartController
+            onDecrement={onDecrement}
+            onIncrement={onIncrement}
+            quantity={showQuantity}
+          />
+        ) : (
+          <View style={styles.outOfStockView}>
+            <Text style={styles.outOfStockText}>{'Out of Stock'}</Text>
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -179,6 +180,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: 'center',
     minHeight: 50,
+  },
+  outOfStockView: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+  },
+  outOfStockText: {
+    color: Colors.whiteText,
+    fontSize: 16,
   },
 });
 

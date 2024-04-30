@@ -27,6 +27,7 @@ import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ScreenNames} from '../Constants/ScreenName';
 import {selectOrders} from '../Storage/Slices/OrderSlice';
+import {GET_LIST_OF_PRODUCTS} from '../Constants/ActionTypes';
 
 const UserDetails = () => {
   const [username, setUserName] = useState('');
@@ -53,6 +54,39 @@ const UserDetails = () => {
     getUsernameAndUid();
   }, []);
 
+  const validateOrder = useCallback(
+    async (order: Order) => {
+      try {
+        const itemsOutOfStock: Product[] = [];
+        dispatch({type: GET_LIST_OF_PRODUCTS});
+        order?.products?.map(product => {
+          const actualProduct = products?.find(
+            (prod: Product) => prod.id === product.id,
+          );
+          if (actualProduct) {
+            if (actualProduct?.quantity < product?.quantity) {
+              itemsOutOfStock.push(product);
+            }
+          }
+        });
+        if (isNonEmpty(itemsOutOfStock)) {
+          let showItems = ``;
+          itemsOutOfStock?.map(product => {
+            showItems += `${product?.name}\n`;
+          });
+          Alert.alert(
+            'Error',
+            `Currently following items are out of stock or you ordered a quantity more than available in stock: \n\n${showItems}\nPlease remove them from order list to complete your order.\n`,
+          );
+          return false;
+        } else return true;
+      } catch (error) {
+        console.log('error ====', error);
+      }
+    },
+    [dispatch, products],
+  );
+
   const placeOrder = useCallback(async () => {
     setLoading(true);
     if (isNonEmpty(username) && isNonEmpty(uid) && !isNonEmpty(orders)) {
@@ -66,22 +100,25 @@ const UserDetails = () => {
         status: OrderStatuses.OrderPlaced,
       };
 
-      await FBManager.Add(Schemas.Order, uid, order);
-      await Promise.all(
-        order.products?.map(async (product: Product) => {
-          const actualProduct = products?.find(
-            (prod: Product) => prod.id === product.id,
-          );
-          await FBManager.Update(Schemas.Product, product.id, {
-            quantity:
-              actualProduct?.quantity - product.quantity > 0
-                ? actualProduct?.quantity - product.quantity
-                : 0,
-          });
-        }),
-      );
-      dispatch(setCartItemsAction([]));
-      navigate(ScreenNames.HomeScreen, {isFromUserDetails: true});
+      const isOrderValid = await validateOrder(order);
+      if (isOrderValid) {
+        await FBManager.Add(Schemas.Order, uid, order);
+        await Promise.all(
+          order.products?.map(async (product: Product) => {
+            const actualProduct = products?.find(
+              (prod: Product) => prod.id === product.id,
+            );
+            await FBManager.Update(Schemas.Product, product.id, {
+              quantity:
+                actualProduct?.quantity - product.quantity > 0
+                  ? actualProduct?.quantity - product.quantity
+                  : 0,
+            });
+          }),
+        );
+        dispatch(setCartItemsAction([]));
+        navigate(ScreenNames.HomeScreen, {isFromUserDetails: true});
+      }
     } else if (isNonEmpty(orders)) {
       Alert.alert(
         'Error',

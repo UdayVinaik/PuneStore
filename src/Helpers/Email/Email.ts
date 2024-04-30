@@ -19,8 +19,6 @@ export const sendEmail = async (to: string = 'vinaik.business@gmail.com', subjec
 
         const canOpen = Linking.canOpenURL(url);
 
-        console.log('canOpen ====', canOpen)
-
         if(!canOpen) {
             throw new Error('Provided URL can not be handled');
         }

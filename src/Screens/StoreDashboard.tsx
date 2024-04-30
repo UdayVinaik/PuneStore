@@ -89,7 +89,7 @@ const StoreDashboard = () => {
   useEffect(() => {
     if (!isNonEmpty(products) || route.params?.isFromEditProduct) {
       setParams({isFromEditProduct: false});
-      dispatch({type: GET_LIST_OF_PRODUCTS});
+      dispatch({type: GET_LIST_OF_PRODUCTS, payload: {isFetchImages: true}});
     }
     if (!isNonEmpty(orders)) {
       dispatch({type: GET_ORDER_LIST});

@@ -34,7 +34,6 @@ const Orders = () => {
   useEffect(() => {
     if (!isFirstUpdate.current) {
       if (route.params?.isFromUpdateOrder) {
-        console.log('in if and call');
         dispatch({type: GET_ORDER_LIST});
         setParams({isFromUpdateOrder: false});
       }

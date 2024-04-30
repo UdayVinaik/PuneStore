@@ -100,11 +100,9 @@ function HomeScreen() {
     getUid();
   }, [setUid]);
 
-  console.log('uid ====', uid);
-
   useEffect(() => {
     if (!isNonEmpty(products)) {
-      dispatch({type: GET_LIST_OF_PRODUCTS});
+      dispatch({type: GET_LIST_OF_PRODUCTS, payload: {isFetchImages: true}});
     }
     if (!isNonEmpty(orders)) {
       dispatch({type: GET_ORDER_BY_ID, payload: {id: uid.toUpperCase()}});

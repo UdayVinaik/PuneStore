@@ -14,12 +14,13 @@ export const getListProducts = async () => {
     }
 }
 
-export function* workerProductSaga(payload: any) {
+export function* workerProductSaga({payload}: any) {
     try {
         const result: Product[] = yield call(getListProducts);
         yield put(setListProductsSuccessAction(result));
-        yield put({type: GET_ALL_IMAGES_FROM_STORAGE})
-
+        if(payload?.isFetchImages) {
+            yield put({type: GET_ALL_IMAGES_FROM_STORAGE});
+        }
     }
     catch(error) {
         console.log('Error ==', error);
