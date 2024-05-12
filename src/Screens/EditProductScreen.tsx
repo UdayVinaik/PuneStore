@@ -21,6 +21,7 @@ import FBManager from '../Helpers/Firebase/FirebaseManager';
 import {Schemas} from '../Constants/SchemaName';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ScreenNames} from '../Constants/ScreenName';
+import CustomImageBackground from '../Components/CustomImageBackground/CustomImageBackground';
 
 const EditProductScreen = () => {
   const route =
@@ -45,7 +46,7 @@ const EditProductScreen = () => {
   }, [setUploading, product, navigate]);
 
   return (
-    <View style={styles.container}>
+    <CustomImageBackground>
       <Header title={'Dashboard'} leftIcon={'true'} />
       <ScrollView style={styles.container}>
         <View style={styles.listContainer}>
@@ -69,14 +70,13 @@ const EditProductScreen = () => {
         </View>
       </ScrollView>
       {uploading && <Loader isLoading={uploading} />}
-    </View>
+    </CustomImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   listContainer: {
     marginTop: 40,

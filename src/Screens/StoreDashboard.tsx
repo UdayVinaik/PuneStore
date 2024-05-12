@@ -30,6 +30,8 @@ import Loader from '../Components/Loader/Loader';
 import {AsyncStorageConstants} from '../Constants/AsyncStorageConstants';
 import {RootStackParamListType} from '../Constants/Types';
 import NetInfo from '@react-native-community/netinfo';
+import {selectIsAdminLoggedIn} from '../Storage/Slices/GlobalSlice';
+import CustomImageBackground from '../Components/CustomImageBackground/CustomImageBackground';
 
 const StoreDashboard = () => {
   const {navigate, setParams} =
@@ -41,47 +43,11 @@ const StoreDashboard = () => {
   const dispatch = useDispatch();
   const appState = useRef(AppState.currentState);
   let isConnected = useRef<boolean | null>(true);
+  const isAdmin = useSelector(selectIsAdminLoggedIn);
 
   const onSuccess = () => {
     BackHandler.exitApp();
   };
-
-  useEffect(() => {
-    const unsubscribeNetInfo = NetInfo.addEventListener(currentState => {
-      isConnected.current = currentState.isConnected;
-      if (!currentState.isConnected) {
-        Alert.alert(
-          'Error',
-          'Please connect to internet. You do not have a internet connection at this moment.',
-          [{text: 'OK', onPress: () => onSuccess()}],
-        );
-      }
-    });
-    return () => unsubscribeNetInfo();
-  }, []);
-
-  // For network connection
-  useEffect(() => {
-    const unsubscribe = AppState.addEventListener('change', nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
-      ) {
-        if (!isConnected.current) {
-          Alert.alert(
-            'Error',
-            'Please connect to internet. You do not have a internet connection at this moment.',
-            [{text: 'OK', onPress: () => onSuccess()}],
-          );
-        }
-      }
-      appState.current = nextAppState;
-    });
-
-    return () => {
-      unsubscribe.remove();
-    };
-  }, []);
 
   console.log('products  ====', products);
   console.log('orders ====', orders);
@@ -91,7 +57,7 @@ const StoreDashboard = () => {
       setParams({isFromEditProduct: false});
       dispatch({type: GET_LIST_OF_PRODUCTS, payload: {isFetchImages: true}});
     }
-    if (!isNonEmpty(orders)) {
+    if (isAdmin) {
       dispatch({type: GET_ORDER_LIST});
     }
   }, [products, dispatch, route.params?.isFromEditProduct]);
@@ -113,6 +79,10 @@ const StoreDashboard = () => {
     navigate(ScreenNames.LoginScreen, {isFromLogout: true});
   }, [navigate]);
 
+  const placeNewOrder = useCallback(() => {
+    navigate(ScreenNames.HomeScreen);
+  }, [navigate]);
+
   if (!products && !orders) {
     return (
       <View style={styles.container}>
@@ -123,12 +93,9 @@ const StoreDashboard = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Header title="Dashboard" />
+    <CustomImageBackground>
+      <Header title="Dashboard" leftIcon="true" />
       <ScrollView style={styles.listContainer}>
-        <TouchableOpacity style={styles.button} onPress={addProduct}>
-          <Text style={styles.buttonText}>{'Add Product'}</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={viewOrders}>
           <Text style={styles.buttonText}>{'View Orders'}</Text>
         </TouchableOpacity>
@@ -137,18 +104,24 @@ const StoreDashboard = () => {
           onPress={navigateToListProducts}>
           <Text style={styles.buttonText}>{'List Products'}</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={addProduct}>
+          <Text style={styles.buttonText}>{'Add New Product'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={placeNewOrder}>
+          <Text style={styles.buttonText}>{'Place Order'}</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={onPressLogout}>
           <Text style={styles.buttonText}>{'Log out'}</Text>
         </TouchableOpacity>
       </ScrollView>
-    </View>
+    </CustomImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    // backgroundColor: Colors.background,
   },
   listContainer: {
     marginTop: 40,

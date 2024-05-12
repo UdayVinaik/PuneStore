@@ -9,6 +9,9 @@ interface TextInputProps {
   isError?: boolean;
   placeholder?: string;
   errorText?: string;
+  multiline?: boolean;
+  numberOfLines?: number;
+  containerStyle?: any;
 }
 
 const CustomTextInput = ({
@@ -17,15 +20,20 @@ const CustomTextInput = ({
   isError,
   placeholder = '',
   errorText = '',
+  multiline,
+  numberOfLines,
+  containerStyle,
 }: TextInputProps) => {
   return (
     <View style={styles.container}>
       <TextInput
         value={value}
         onChangeText={onChangeText}
-        style={[styles.input, isError && styles.error]}
+        style={[styles.input, containerStyle, isError && styles.error]}
         placeholder={placeholder}
         placeholderTextColor={Colors.primary}
+        multiline={multiline}
+        numberOfLines={numberOfLines}
       />
       {isError && (
         <Text style={styles.errorText}>{errorText ? errorText : 'Error'}</Text>

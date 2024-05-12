@@ -1,4 +1,5 @@
 export const Schemas = {
     Product: 'Product',
-    Order: 'Order'
+    Order: 'Order',
+    Admins: 'Admins'
 }

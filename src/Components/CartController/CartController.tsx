@@ -14,16 +14,16 @@ const CartController = (props: CartControllerProps) => {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.iconContainer}
-        onPress={props.onDecrement}>
-        <CustomIcon name="minus" />
+        onPress={props.onIncrement}>
+        <CustomIcon name="plus" />
       </TouchableOpacity>
       <View style={styles.textContainer}>
         <Text style={styles.text}>{props.quantity}</Text>
       </View>
       <TouchableOpacity
         style={styles.iconContainer}
-        onPress={props.onIncrement}>
-        <CustomIcon name="plus" />
+        onPress={props.onDecrement}>
+        <CustomIcon name="minus" />
       </TouchableOpacity>
     </View>
   );
@@ -31,14 +31,16 @@ const CartController = (props: CartControllerProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
   },
   iconContainer: {
     backgroundColor: Colors.primary,
-    padding: 7,
+    padding: 1,
     borderRadius: 20,
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },

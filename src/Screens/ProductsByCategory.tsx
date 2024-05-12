@@ -7,6 +7,7 @@ import ProductItem from '../Components/ProductItem/ProductItem';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {ScreenNames} from '../Constants/ScreenName';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import CustomImageBackground from '../Components/CustomImageBackground/CustomImageBackground';
 
 interface ProductsByCategoryProps {
   route: any;
@@ -33,13 +34,13 @@ const ProductsByCategory = (props: ProductsByCategoryProps) => {
   }, [navigate]);
 
   const navigateToProductCategory = useCallback(() => {
-    navigate(ScreenNames.ProductList);
+    navigate(ScreenNames.HomeScreen);
   }, [navigate]);
 
   return (
-    <View style={styles.container}>
+    <CustomImageBackground>
       <Header title={'Products by category'} leftIcon={'true'} />
-      <FlatList data={products} renderItem={renderItem} numColumns={2} />
+      <FlatList data={products} renderItem={renderItem} />
       <TouchableOpacity
         style={styles.button}
         onPress={navigateToProductCategory}>
@@ -48,15 +49,11 @@ const ProductsByCategory = (props: ProductsByCategoryProps) => {
       <TouchableOpacity style={styles.button} onPress={navigateToCart}>
         <Text style={styles.buttonText}>{'Go to Cart'}</Text>
       </TouchableOpacity>
-    </View>
+    </CustomImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.grey1,
-  },
   button: {
     backgroundColor: Colors.primary,
     paddingVertical: 15,
@@ -64,7 +61,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     marginHorizontal: 10,
-    marginVertical: 20,
+    marginVertical: 10,
   },
   buttonText: {
     color: Colors.whiteText,

@@ -10,6 +10,7 @@ import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ScreenNames} from '../Constants/ScreenName';
 import {isNonEmpty} from '../Helpers/Utility/UtilityManager';
+import CustomImageBackground from '../Components/CustomImageBackground/CustomImageBackground';
 
 interface CartProps {}
 
@@ -36,25 +37,21 @@ const Cart = (props: CartProps) => {
 
   if (!isNonEmpty(cartProducts)) {
     return (
-      <View style={styles.container}>
+      <CustomImageBackground>
         <Header title={'Cart'} leftIcon={'true'} />
         <View style={styles.emptyTextContainer}>
           <Text style={styles.emptyText}>
             {'Your cart is empty. Please add some items to place order.'}
           </Text>
         </View>
-      </View>
+      </CustomImageBackground>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <CustomImageBackground>
       <Header title={'Cart'} leftIcon={'true'} />
-      <FlatList
-        data={cartProducts ?? []}
-        renderItem={renderItem}
-        numColumns={2}
-      />
+      <FlatList data={cartProducts ?? []} renderItem={renderItem} />
       <View style={styles.totalContainer}>
         <Text style={styles.totalText}>{'Total amount: '}</Text>
         <Text style={styles.totalText}>
@@ -64,15 +61,11 @@ const Cart = (props: CartProps) => {
       <TouchableOpacity style={styles.button} onPress={onPressCheckout}>
         <Text style={styles.buttonText}>{'Checkout'}</Text>
       </TouchableOpacity>
-    </View>
+    </CustomImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.grey1,
-  },
   button: {
     backgroundColor: Colors.primary,
     paddingVertical: 15,
@@ -104,12 +97,14 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 20,
-    color: Colors.text,
-    fontWeight: '200',
+    color: Colors.whiteText,
+    fontWeight: '500',
   },
   emptyTextContainer: {
     marginHorizontal: 10,
     marginVertical: 20,
+    backgroundColor: Colors.primary,
+    padding: 10,
   },
 });
 

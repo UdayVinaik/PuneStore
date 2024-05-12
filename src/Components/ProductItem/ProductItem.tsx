@@ -100,23 +100,26 @@ const ProductItem = (props: ProductItemProps) => {
           style={styles.image}
         />
       </View>
-      <View style={styles.nameContainer}>
-        <Text style={styles.name} numberOfLines={2}>
-          {item.name}
-        </Text>
-      </View>
-      <View style={styles.priceContainer}>
-        <Text style={styles.name}>
-          {props?.isFromCart ? item.totalPrice : item.price}
-          {' Rs.'}
-        </Text>
-      </View>
-      {props?.isFromStoreDashboard && (
-        <View style={styles.priceContainer}>
-          <Text style={styles.quantity}>{'Quantities Left: '}</Text>
-          <Text style={styles.quantityRed}>{item.quantity ?? 0}</Text>
+      <View style={styles.nameAndQuantityContainer}>
+        <View style={styles.nameContainer}>
+          <Text style={styles.name} numberOfLines={2}>
+            {item.name}
+          </Text>
         </View>
-      )}
+        <View style={styles.priceContainer}>
+          <Text style={styles.name}>
+            {props?.isFromCart ? item.totalPrice : item.price}
+            {' Rs.'}
+          </Text>
+        </View>
+        {props?.isFromStoreDashboard && (
+          <View style={styles.quantityContainer}>
+            <Text style={styles.quantity}>{'Quantities Left: '} </Text>
+            <Text style={styles.quantityRed}>{item.quantity ?? 0}</Text>
+          </View>
+        )}
+      </View>
+
       <View style={styles.cartControllerContainer}>
         {item.quantity > 0 ? (
           <CartController
@@ -137,33 +140,37 @@ const ProductItem = (props: ProductItemProps) => {
 const styles = StyleSheet.create({
   itemContainer: {
     flex: 1,
-    alignItems: 'center',
+    flexDirection: 'row',
     backgroundColor: Colors.background,
     marginHorizontal: 10,
-    marginVertical: 10,
+    marginVertical: 5,
+    alignItems: 'center',
+    borderRadius: 20,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     borderRadius: 10,
   },
   imageContainer: {
-    paddingVertical: 10,
-    paddingTop: 25,
+    marginHorizontal: 10,
+    marginVertical: 10,
+    flex: 0.2,
+  },
+  nameAndQuantityContainer: {
+    flex: 0.6,
+    marginVertical: 15,
   },
   name: {
-    fontSize: 20,
+    fontSize: 18,
     color: Colors.text,
     fontWeight: '500',
   },
   nameContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    minHeight: 70,
+    paddingLeft: 20,
   },
   cartControllerContainer: {
-    paddingBottom: 20,
+    flex: 0.2,
   },
   quantity: {
     fontSize: 16,
@@ -171,21 +178,26 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   quantityRed: {
-    fontSize: 20,
+    fontSize: 16,
     color: Colors.accent,
     fontWeight: '700',
   },
   priceContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingLeft: 20,
+  },
+  quantityContainer: {
+    paddingLeft: 20,
+    flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 50,
   },
   outOfStockView: {
     backgroundColor: Colors.primary,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    marginRight: 10,
   },
   outOfStockText: {
     color: Colors.whiteText,

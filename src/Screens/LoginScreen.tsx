@@ -20,6 +20,7 @@ import {
 } from '../Helpers/Utility/UtilityManager';
 import {AsyncStorageConstants} from '../Constants/AsyncStorageConstants';
 import {RootStackParamListType} from '../Constants/Types';
+import CustomImageBackground from '../Components/CustomImageBackground/CustomImageBackground';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
@@ -69,21 +70,8 @@ const LoginScreen = () => {
     }
   };
 
-  const handleOwnerLogin = async () => {
-    if (
-      username.toLowerCase() === 'punestore' &&
-      password.toLowerCase() === 'radhasoami'
-    ) {
-      await storeDataInAsyncStorage(
-        AsyncStorageConstants.LoggedInType,
-        'owner',
-      );
-      navigate(ScreenNames.StoreDashboard);
-    }
-  };
-
   return (
-    <View style={{flex: 1}}>
+    <CustomImageBackground>
       <Header title={'Sign In'} />
       <View style={styles.container}>
         <View style={styles.puneSatsangStoreText}>
@@ -107,21 +95,16 @@ const LoginScreen = () => {
           </View>
         )}
         <TouchableOpacity style={styles.button} onPress={handleUserLogin}>
-          <Text style={styles.buttonText}>{'Login as User'}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleOwnerLogin}>
-          <Text style={styles.buttonText}>{'Login as Owner'}</Text>
+          <Text style={styles.buttonText}>{'Login'}</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </CustomImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    backgroundColor: Colors.background,
     paddingHorizontal: 20,
   },
   title: {
@@ -145,12 +128,12 @@ const styles = StyleSheet.create({
   puneSatsangStoreText: {
     alignItems: 'center',
     paddingVertical: 30,
-    backgroundColor: Colors.background,
+    // backgroundColor: Colors.background,
     paddingTop: 50,
   },
   storeText: {
     fontSize: 36,
-    color: Colors.primary,
+    color: Colors.whiteText,
   },
   errorText: {
     color: Colors.red,

@@ -86,3 +86,11 @@ export type RootStackParamListType = {
         isFromEditProduct?: boolean;
     }
 }
+
+export interface GlobalReducerType {
+    isAdmin: boolean;
+}
+
+export interface Admin {
+    uid: string;
+}

@@ -3,6 +3,7 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import Header from '../Components/Header/Header';
 import {Colors} from '../Theme/Colors';
 import {CartProduct} from '../Constants/Types';
+import CustomImageBackground from '../Components/CustomImageBackground/CustomImageBackground';
 
 interface OrderDetailsProps {
   route: any;
@@ -37,7 +38,7 @@ const OrderDetails = (props: OrderDetailsProps) => {
     );
   };
   return (
-    <View style={styles.container}>
+    <CustomImageBackground>
       <Header title={'Order Details'} leftIcon={'true'} />
       <ScrollView style={styles.listContainer}>
         {order?.products?.map((product: CartProduct) => {
@@ -50,15 +51,11 @@ const OrderDetails = (props: OrderDetailsProps) => {
           </Text>
         </View>
       </ScrollView>
-    </View>
+    </CustomImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.grey1,
-  },
   listContainer: {
     flex: 1,
     marginTop: 40,

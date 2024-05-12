@@ -10,5 +10,6 @@ export const ScreenNames = {
     Orders: 'Orders',
     OrderDetails: 'OrderDetails',
     StoreOrderDetails: 'StoreOrderDetails',
-    EditProductScreen: 'EditProductScreen'
+    EditProductScreen: 'EditProductScreen',
+    Help: 'Help'
 }

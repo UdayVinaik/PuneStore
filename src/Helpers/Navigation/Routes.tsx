@@ -14,6 +14,7 @@ import Orders from '../../Screens/Orders';
 import OrderDetails from '../../Screens/OrderDetails';
 import StoreOrderDetails from '../../Screens/StoreOrderDetails';
 import EditProductScreen from '../../Screens/EditProductScreen';
+import Help from '../../Screens/Help';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,7 @@ const Routes = () => {
           name={ScreenNames.EditProductScreen}
           component={EditProductScreen}
         />
+        <Stack.Screen name={ScreenNames.Help} component={Help} />
       </Stack.Navigator>
     </NavigationContainer>
   );

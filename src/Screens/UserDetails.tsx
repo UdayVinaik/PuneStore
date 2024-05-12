@@ -14,7 +14,6 @@ import CustomTextInput from '../Components/TextInput/TextInput';
 import {
   getDataFromAsyncStorage,
   isNonEmpty,
-  storeDataInAsyncStorage,
 } from '../Helpers/Utility/UtilityManager';
 import {AsyncStorageConstants} from '../Constants/AsyncStorageConstants';
 import {useDispatch, useSelector} from 'react-redux';
@@ -28,6 +27,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ScreenNames} from '../Constants/ScreenName';
 import {selectOrders} from '../Storage/Slices/OrderSlice';
 import {GET_LIST_OF_PRODUCTS} from '../Constants/ActionTypes';
+import {selectIsAdminLoggedIn} from '../Storage/Slices/GlobalSlice';
 
 const UserDetails = () => {
   const [username, setUserName] = useState('');
@@ -41,6 +41,7 @@ const UserDetails = () => {
   const {navigate} =
     useNavigation<NativeStackNavigationProp<ParamListBase, string>>();
   const dispatch = useDispatch();
+  const isAdmin = useSelector(selectIsAdminLoggedIn);
 
   useEffect(() => {
     const getUsernameAndUid = async () => {
@@ -89,7 +90,10 @@ const UserDetails = () => {
 
   const placeOrder = useCallback(async () => {
     setLoading(true);
-    if (isNonEmpty(username) && isNonEmpty(uid) && !isNonEmpty(orders)) {
+    if (
+      (isNonEmpty(username) && isNonEmpty(uid) && !isNonEmpty(orders)) ||
+      (isNonEmpty(username) && isNonEmpty(uid) && isAdmin)
+    ) {
       const order: Order = {
         id: uid.toUpperCase(),
         userDetails: {
@@ -127,10 +131,6 @@ const UserDetails = () => {
       navigate(ScreenNames.HomeScreen);
     } else {
       Alert.alert('Error', 'Please check if name or uid is missing');
-    }
-    if (!isNonEmpty(storedName) && !isNonEmpty(storedUid)) {
-      await storeDataInAsyncStorage(AsyncStorageConstants.Name, username);
-      await storeDataInAsyncStorage(AsyncStorageConstants.UID, uid);
     }
     setLoading(false);
   }, [username, uid, navigate, storedName, storedUid, products]);

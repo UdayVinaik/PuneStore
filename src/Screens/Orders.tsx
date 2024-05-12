@@ -22,6 +22,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ScreenNames} from '../Constants/ScreenName';
 import {isNonEmpty} from '../Helpers/Utility/UtilityManager';
 import {GET_ORDER_LIST} from '../Constants/ActionTypes';
+import CustomImageBackground from '../Components/CustomImageBackground/CustomImageBackground';
 
 const Orders = () => {
   const isFirstUpdate = useRef(true);
@@ -75,27 +76,25 @@ const Orders = () => {
     );
   };
   return (
-    <View style={styles.container}>
+    <CustomImageBackground>
       <Header title={'Orders'} leftIcon={'true'} />
       <ScrollView style={styles.listContainer}>
         {!isNonEmpty(orders) && (
-          <Text style={styles.emptyText}>
-            {'There are no orders placed by you currently.'}
-          </Text>
+          <View style={styles.emptyTextContainer}>
+            <Text style={styles.emptyText}>
+              {'There are no orders placed by you currently.'}
+            </Text>
+          </View>
         )}
         {orders?.map((item: Order) => {
           return renderItem(item);
         })}
       </ScrollView>
-    </View>
+    </CustomImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.grey1,
-  },
   listContainer: {
     flex: 1,
     marginTop: 40,
@@ -131,8 +130,14 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 20,
-    color: Colors.text,
-    fontWeight: '200',
+    color: Colors.whiteText,
+    fontWeight: '700',
+  },
+  emptyTextContainer: {
+    marginHorizontal: 10,
+    marginVertical: 20,
+    backgroundColor: Colors.primary,
+    padding: 10,
   },
 });
 

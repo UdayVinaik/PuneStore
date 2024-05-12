@@ -8,9 +8,15 @@ interface HeaderProps {
   title: string;
   leftIcon?: string;
   rightIcon?: string;
+  onRightIconPress?: () => void;
 }
 
-const Header = ({title, leftIcon, rightIcon}: HeaderProps) => {
+const Header = ({
+  title,
+  leftIcon,
+  rightIcon,
+  onRightIconPress,
+}: HeaderProps) => {
   const navigation = useNavigation();
 
   return (
@@ -24,9 +30,13 @@ const Header = ({title, leftIcon, rightIcon}: HeaderProps) => {
         <Text style={styles.title}>{title}</Text>
       </View>
       <TouchableOpacity
-        onPress={() => console.log('Custom action')}
+        onPress={onRightIconPress}
         style={styles.leftRightBlock}>
-        {rightIcon && <Text style={styles.actionButton}>{'Custom'}</Text>}
+        {rightIcon && (
+          <Text style={styles.actionButton}>
+            {rightIcon ? rightIcon : 'Custom'}
+          </Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -43,6 +53,7 @@ const styles = StyleSheet.create({
   backButton: {
     color: '#fff',
     fontSize: 16,
+    fontWeight: '500',
   },
   titleBox: {
     flex: 0.8,
@@ -56,6 +67,7 @@ const styles = StyleSheet.create({
   actionButton: {
     color: '#fff',
     fontSize: 16,
+    fontWeight: '500',
   },
   leftRightBlock: {
     flex: 0.2,

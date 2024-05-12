@@ -3,7 +3,7 @@ import {Product, ProductStateType} from '../../Constants/Types';
 
 const initialState: ProductStateType = {
   listProduct: null,
-  loading: false,
+  loading: true,
   errors: '',
 };
 

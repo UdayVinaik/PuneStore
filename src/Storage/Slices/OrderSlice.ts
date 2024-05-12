@@ -3,7 +3,7 @@ import {OrderStateType } from "../../Constants/Types";
 
 const initialState: OrderStateType = {
     listOrders: null,
-    loading: false,
+    loading: true,
     errors: ''
 }
 
@@ -13,9 +13,11 @@ export const orderSlice = createSlice({
     reducers: {
         setOrderListAction(state, action) {
             state.listOrders = action.payload;
+            state.loading = false;
         },
         setOrderListErrorAction(state, action) {
             state.errors = action.payload;
+            state.loading = false;
         }
     }
 });
