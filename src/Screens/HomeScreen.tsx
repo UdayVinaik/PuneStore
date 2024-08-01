@@ -22,7 +22,7 @@ import {
 import {ScreenNames} from '../Constants/ScreenName';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Loader from '../Components/Loader/Loader';
-import {selectOrders} from '../Storage/Slices/OrderSlice';
+import {selectOrders, setOrderListAction} from '../Storage/Slices/OrderSlice';
 import {
   Admin,
   Product,
@@ -42,6 +42,7 @@ import {Categories} from '../Constants/Category';
 import FBManager from '../Helpers/Firebase/FirebaseManager';
 import {Schemas} from '../Constants/SchemaName';
 import {selectIsAdminLoggedIn, setIsAdmin} from '../Storage/Slices/GlobalSlice';
+import {setListProductsSuccessAction} from '../Storage/Slices/ProductSlice';
 
 function HomeScreen() {
   const dispatch = useDispatch();
@@ -177,11 +178,13 @@ function HomeScreen() {
       );
       if (isAdmin) {
         dispatch(setIsAdmin(true));
+      } else {
+        dispatch(setIsAdmin(false));
       }
     };
 
     getDataFromBackend();
-  }, [products, dispatch, route.params?.isFromUserDetails]);
+  }, [products, dispatch, route.params?.isFromUserDetails, uid, setParams]);
 
   useEffect(() => {
     modifyData();
@@ -205,7 +208,11 @@ function HomeScreen() {
 
   const onPressLogout = useCallback(async () => {
     await storeDataInAsyncStorage(AsyncStorageConstants.LoggedInType, null);
+    await storeDataInAsyncStorage(AsyncStorageConstants.UID, '');
+    await storeDataInAsyncStorage(AsyncStorageConstants.Name, '');
     navigate(ScreenNames.LoginScreen, {isFromLogout: true});
+    dispatch(setListProductsSuccessAction(null));
+    dispatch(setOrderListAction(null));
   }, [navigate]);
 
   if (isProductsLoading || isOrdersLoading) {
@@ -237,10 +244,14 @@ function HomeScreen() {
         })}
       </ScrollView>
       <View style={styles.bottomView}>
-        <TouchableOpacity style={styles.button} onPress={navigateToOrdersPage}>
-          <Text style={styles.buttonText}>{'Your Orders'}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={navigateToCart}>
+        {!isAdmin && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={navigateToOrdersPage}>
+            <Text style={styles.buttonText}>{'Your Orders'}</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity style={[styles.button]} onPress={navigateToCart}>
           <Text style={styles.buttonText}>{'Go to Cart'}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={navigateToHelp}>
@@ -264,6 +275,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: Colors.primary,
+    margin: 2,
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 5,

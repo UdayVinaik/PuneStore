@@ -94,7 +94,7 @@ const StoreDashboard = () => {
 
   return (
     <CustomImageBackground>
-      <Header title="Dashboard" leftIcon="true" />
+      <Header title=" Store Dashboard" leftIcon="true" />
       <ScrollView style={styles.listContainer}>
         <TouchableOpacity style={styles.button} onPress={viewOrders}>
           <Text style={styles.buttonText}>{'View Orders'}</Text>

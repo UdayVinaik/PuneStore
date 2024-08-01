@@ -29,6 +29,7 @@ const ProductItem = (props: ProductItemProps) => {
     const resultIndex: number = cartProducts?.findIndex(
       (product: Product) => product?.id === item?.id,
     );
+    // If we found item in cart
     if (resultIndex !== -1) {
       if (cartProducts[resultIndex]?.quantity > 1) {
         const price = cartProducts[resultIndex]?.totalPrice - item.price;
@@ -40,7 +41,9 @@ const ProductItem = (props: ProductItemProps) => {
           quantity: quantity,
         };
         dispatch(setCartItemsAction(modifiedCartProducts));
-      } else {
+      }
+      // if we didn't find item in cart
+      else {
         const modifiedCartProducts = [...cartProducts];
         modifiedCartProducts.splice(resultIndex, 1);
         dispatch(setCartItemsAction(modifiedCartProducts));
@@ -52,6 +55,7 @@ const ProductItem = (props: ProductItemProps) => {
     const resultIndex: number = cartProducts?.findIndex(
       (product: Product) => product?.id === item?.id,
     );
+    // If we found item in cart
     if (resultIndex !== -1) {
       const price = cartProducts[resultIndex]?.totalPrice + item.price;
       const quantity = cartProducts[resultIndex]?.quantity + 1;
@@ -62,7 +66,9 @@ const ProductItem = (props: ProductItemProps) => {
         quantity: quantity,
       };
       dispatch(setCartItemsAction(modifiedCartProducts));
-    } else {
+    }
+    // If we found item in cart
+    else {
       const modifiedCartProducts = [
         ...cartProducts,
         {...item, quantity: 1, totalPrice: item.price},
@@ -70,6 +76,50 @@ const ProductItem = (props: ProductItemProps) => {
       dispatch(setCartItemsAction(modifiedCartProducts));
     }
   }, [cartProducts, item, dispatch]);
+
+  const onEnterValue = useCallback(
+    (val: string) => {
+      const isValidValue = parseInt(val) > 0;
+      if (isValidValue) {
+        const resultIndex: number = cartProducts?.findIndex(
+          (product: Product) => product?.id === item?.id,
+        );
+        // If we found item in cart
+        if (resultIndex !== -1) {
+          const price = parseInt(val) * item.price;
+          const quantity = parseInt(val);
+          const modifiedCartProducts = [...cartProducts];
+          modifiedCartProducts[resultIndex] = {
+            ...modifiedCartProducts[resultIndex],
+            totalPrice: price,
+            quantity: quantity,
+          };
+          dispatch(setCartItemsAction(modifiedCartProducts));
+        }
+        // If we found item in cart
+        else {
+          const modifiedCartProducts = [
+            ...cartProducts,
+            {
+              ...item,
+              quantity: parseInt(val),
+              totalPrice: parseInt(val) * item.price,
+            },
+          ];
+          dispatch(setCartItemsAction(modifiedCartProducts));
+        }
+      }
+      if (isNaN(parseInt(val))) {
+        const resultIndex: number = cartProducts?.findIndex(
+          (product: Product) => product?.id === item?.id,
+        );
+        const modifiedCartProducts = [...cartProducts];
+        modifiedCartProducts.splice(resultIndex, 1);
+        dispatch(setCartItemsAction(modifiedCartProducts));
+      }
+    },
+    [cartProducts, item, dispatch],
+  );
 
   const showQuantity = useMemo(() => {
     const isProductAvailableInCart = cartProducts?.find(
@@ -126,6 +176,7 @@ const ProductItem = (props: ProductItemProps) => {
             onDecrement={onDecrement}
             onIncrement={onIncrement}
             quantity={showQuantity}
+            onEnterValue={onEnterValue}
           />
         ) : (
           <View style={styles.outOfStockView}>

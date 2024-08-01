@@ -28,6 +28,7 @@ import {ScreenNames} from '../Constants/ScreenName';
 import {selectOrders} from '../Storage/Slices/OrderSlice';
 import {GET_LIST_OF_PRODUCTS} from '../Constants/ActionTypes';
 import {selectIsAdminLoggedIn} from '../Storage/Slices/GlobalSlice';
+import uuid from 'react-native-uuid';
 
 const UserDetails = () => {
   const [username, setUserName] = useState('');
@@ -95,7 +96,7 @@ const UserDetails = () => {
       (isNonEmpty(username) && isNonEmpty(uid) && isAdmin)
     ) {
       const order: Order = {
-        id: uid.toUpperCase(),
+        id: isAdmin ? uuid.v4()?.toString() : uid.toUpperCase(),
         userDetails: {
           name: username,
           uid: uid.toUpperCase(),
@@ -106,7 +107,7 @@ const UserDetails = () => {
 
       const isOrderValid = await validateOrder(order);
       if (isOrderValid) {
-        await FBManager.Add(Schemas.Order, uid, order);
+        await FBManager.Add(Schemas.Order, order?.id, order);
         await Promise.all(
           order.products?.map(async (product: Product) => {
             const actualProduct = products?.find(

@@ -52,7 +52,7 @@ const Help = () => {
           placeholder={'Type your message here:'}
           multiline={true}
           numberOfLines={4}
-          containerStyle={styles.input}
+          textInputStyle={styles.input}
         />
       </View>
       <TouchableOpacity style={styles.button} onPress={sendAppMsg}>
@@ -70,7 +70,7 @@ const Help = () => {
           placeholder={'Type your message here:'}
           multiline={true}
           numberOfLines={4}
-          containerStyle={styles.input}
+          textInputStyle={styles.input}
         />
       </View>
       <TouchableOpacity style={styles.button} onPress={sendStoreOwnerMsg}>

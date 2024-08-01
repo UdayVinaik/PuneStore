@@ -56,13 +56,18 @@ const LoginScreen = () => {
   }, [navigate]);
 
   const handleUserLogin = async () => {
-    if (validateName(username) && validateUid(password)) {
+    console.log('userName ====', username);
+    console.log('password ====', password);
+    if (validateName(username?.trim()) && validateUid(password?.trim())) {
       setError(false);
       await storeDataInAsyncStorage(
         AsyncStorageConstants.UID,
-        password.toUpperCase(),
+        password?.trim()?.toUpperCase(),
       );
-      await storeDataInAsyncStorage(AsyncStorageConstants.Name, username);
+      await storeDataInAsyncStorage(
+        AsyncStorageConstants.Name,
+        username?.trim(),
+      );
       await storeDataInAsyncStorage(AsyncStorageConstants.LoggedInType, 'user');
       navigate(ScreenNames.HomeScreen);
     } else {

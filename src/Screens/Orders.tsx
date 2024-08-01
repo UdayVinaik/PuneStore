@@ -23,6 +23,7 @@ import {ScreenNames} from '../Constants/ScreenName';
 import {isNonEmpty} from '../Helpers/Utility/UtilityManager';
 import {GET_ORDER_LIST} from '../Constants/ActionTypes';
 import CustomImageBackground from '../Components/CustomImageBackground/CustomImageBackground';
+import {selectIsAdminLoggedIn} from '../Storage/Slices/GlobalSlice';
 
 const Orders = () => {
   const isFirstUpdate = useRef(true);
@@ -31,6 +32,7 @@ const Orders = () => {
     useNavigation<NativeStackNavigationProp<ParamListBase, string>>();
   const route = useRoute<RouteProp<RootStackParamListType, 'Orders'>>();
   const dispatch = useDispatch();
+  const isAdmin = useSelector(selectIsAdminLoggedIn);
 
   useEffect(() => {
     if (!isFirstUpdate.current) {
@@ -62,6 +64,11 @@ const Orders = () => {
         key={item.id}
         onPress={() => onPressOrder(item)}>
         <View style={styles.textContainer}>
+          {isAdmin && (
+            <Text style={[styles.text, styles.orderId]}>
+              {'Name: '} {item.userDetails?.name}
+            </Text>
+          )}
           <Text style={[styles.text, styles.orderId]}>
             {'Order Id: '} {item.id}
           </Text>

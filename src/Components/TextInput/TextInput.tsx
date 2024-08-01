@@ -1,6 +1,6 @@
 // CustomTextInput.js
 import React from 'react';
-import {TextInput, View, Text, StyleSheet} from 'react-native';
+import {TextInput, View, Text, StyleSheet, KeyboardType} from 'react-native';
 import {Colors} from '../../Theme/Colors';
 
 interface TextInputProps {
@@ -12,6 +12,11 @@ interface TextInputProps {
   multiline?: boolean;
   numberOfLines?: number;
   containerStyle?: any;
+  textAlign?: 'left' | 'center' | 'right' | undefined;
+  allowFontScaling?: boolean;
+  maxFontSizeMultiplier?: number;
+  keyboardType?: KeyboardType;
+  textInputStyle?: any;
 }
 
 const CustomTextInput = ({
@@ -23,17 +28,26 @@ const CustomTextInput = ({
   multiline,
   numberOfLines,
   containerStyle,
+  textAlign,
+  allowFontScaling,
+  maxFontSizeMultiplier,
+  keyboardType,
+  textInputStyle,
 }: TextInputProps) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <TextInput
         value={value}
         onChangeText={onChangeText}
-        style={[styles.input, containerStyle, isError && styles.error]}
+        style={[styles.input, textInputStyle, isError && styles.error]}
         placeholder={placeholder}
         placeholderTextColor={Colors.primary}
         multiline={multiline}
         numberOfLines={numberOfLines}
+        textAlign={textAlign}
+        maxFontSizeMultiplier={maxFontSizeMultiplier}
+        allowFontScaling={allowFontScaling}
+        keyboardType={keyboardType}
       />
       {isError && (
         <Text style={styles.errorText}>{errorText ? errorText : 'Error'}</Text>

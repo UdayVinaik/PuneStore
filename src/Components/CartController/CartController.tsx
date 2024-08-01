@@ -2,11 +2,13 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import CustomIcon from '../Icon/Icon';
 import {Colors} from '../../Theme/Colors';
+import CustomTextInput from '../TextInput/TextInput';
 
 interface CartControllerProps {
   onIncrement: () => void;
   onDecrement: () => void;
   quantity: string;
+  onEnterValue: (val: string) => void;
 }
 
 const CartController = (props: CartControllerProps) => {
@@ -18,7 +20,14 @@ const CartController = (props: CartControllerProps) => {
         <CustomIcon name="plus" />
       </TouchableOpacity>
       <View style={styles.textContainer}>
-        <Text style={styles.text}>{props.quantity}</Text>
+        <CustomTextInput
+          value={props.quantity?.toString()}
+          onChangeText={val => props.onEnterValue(val)}
+          textInputStyle={styles.textInputStyle}
+          textAlign={'center'}
+          keyboardType="numeric"
+          containerStyle={styles.textInputContainer}
+        />
       </View>
       <TouchableOpacity
         style={styles.iconContainer}
@@ -47,6 +56,13 @@ const styles = StyleSheet.create({
   textContainer: {
     paddingHorizontal: 10,
     justifyContent: 'center',
+  },
+  textInputStyle: {
+    borderWidth: 0,
+    fontSize: 20,
+  },
+  textInputContainer: {
+    marginVertical: 0,
   },
   text: {
     fontSize: 24,
